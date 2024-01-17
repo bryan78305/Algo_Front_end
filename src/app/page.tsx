@@ -16,7 +16,11 @@ type TableRow = {
   shares_to_sell: number;
 };
 
-const bearerToken = localStorage.getItem("access_token") || "";
+var bearerToken = "";
+
+if (typeof window !== "undefined") {
+  bearerToken = localStorage.getItem("access_token") || "";
+}
 
 export default function Home() {
   const [rows, setRows] = useState<TableRow[]>([]);

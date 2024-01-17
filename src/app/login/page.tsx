@@ -19,7 +19,9 @@ export default function Login() {
     e.preventDefault();
 
     // Store the inputValue in local storage
-    localStorage.setItem("access_token", inputValue);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("access_token", inputValue);
+    }
 
     // Redirect to the home page
     window.location.href = "/";
