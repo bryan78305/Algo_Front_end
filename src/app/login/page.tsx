@@ -24,7 +24,7 @@ export default function Login() {
     }
 
     // Redirect to the home page
-    window.location.href = "/";
+    window.location.href = "/crypto-algo-frontend";
   };
 
   return (
