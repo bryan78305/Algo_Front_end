@@ -3,7 +3,7 @@ const debug = process.env.NODE_ENV !== "production";
 
 const nextConfig = {
   output: "export",
-  assetPrefix: !debug ? "/Algo_Front_end/" : "",
+  assetPrefix: !debug ? "/crypto-algo-frontend/" : "",
 };
 
 module.exports = nextConfig;
