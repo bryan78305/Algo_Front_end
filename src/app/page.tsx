@@ -16,6 +16,8 @@ type TableRow = {
   shares_to_sell: number;
 };
 
+const bearerToken = localStorage.getItem("access_token") || "";
+
 export default function Home() {
   const [rows, setRows] = useState<TableRow[]>([]);
   const [stepTest, setStepTest] = useState<Number>(100);
@@ -26,12 +28,32 @@ export default function Home() {
   // Fetch data from API
   //
   const fetchData = () => {
-    fetch(`${process.env.NEXT_PUBLIC_ALGO_API_URL}/api/v1/steps`)
-      .then((response) => response.json())
+    fetch(`${process.env.NEXT_PUBLIC_ALGO_API_URL}/api/v1/steps`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${bearerToken}`,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          if (response.status === 401) {
+            window.location.href = "/login";
+          } else {
+            // Handle other errors
+            throw new Error("Network response was not ok");
+          }
+        }
+        return response.json();
+      })
       .then((data) => setRows(data.map((item: any) => ({ ...item, isEditing: false }))))
       .catch((error) => console.error("Error fetching data: ", error));
 
-    fetch(`${process.env.NEXT_PUBLIC_ALGO_API_URL}/api/v1/steps/count/` + stepTest)
+    fetch(`${process.env.NEXT_PUBLIC_ALGO_API_URL}/api/v1/steps/count/` + stepTest, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${bearerToken}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => setStepByCount(data))
       .catch((error) => console.error("Error fetching data: ", error));
@@ -55,6 +77,7 @@ export default function Home() {
       fetch(`${process.env.NEXT_PUBLIC_ALGO_API_URL}/api/v1/steps/${rows[index].id}`, {
         method: "PUT",
         headers: {
+          Authorization: `Bearer ${bearerToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(rows[index]),
@@ -97,6 +120,7 @@ export default function Home() {
     fetch(`${process.env.NEXT_PUBLIC_ALGO_API_URL}/api/v1/steps`, {
       method: "POST",
       headers: {
+        Authorization: `Bearer ${bearerToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(newRow),
@@ -111,6 +135,9 @@ export default function Home() {
   const deleteRow = (id: number) => {
     fetch(`${process.env.NEXT_PUBLIC_ALGO_API_URL}/api/v1/steps/${id}`, {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${bearerToken}`,
+      },
     })
       .then(() => fetchData())
       .catch((error) => console.error("Error deleting row: ", error));
@@ -132,6 +159,7 @@ export default function Home() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${bearerToken}`,
       },
       body: JSON.stringify(body),
     })
