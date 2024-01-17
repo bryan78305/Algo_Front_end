@@ -41,7 +41,7 @@ export default function Home() {
       .then((response) => {
         if (!response.ok) {
           if (response.status === 401) {
-            window.location.href = "/login";
+            window.location.href = "/crypto-algo-frontend/login";
           } else {
             // Handle other errors
             throw new Error("Network response was not ok");
