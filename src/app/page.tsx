@@ -173,12 +173,21 @@ export default function Home() {
 
   return (
     <div className="container mx-auto p-4">
-      <button onClick={addRow} className="mb-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        Add Row
-      </button>
-      <button onClick={restartAlgo} className="mb-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-6">
-        Restart Algo
-      </button>
+      <div className="flex justify-between items-center">
+        <div>
+          <button onClick={addRow} className="mb-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Add Row
+          </button>
+          <button onClick={restartAlgo} className="mb-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-6">
+            Restart Algo
+          </button>
+        </div>
+
+        <a href="/Algo_Front_end/stocks" className="text-blue-700 hover:text-blue-900">
+          Stock Dashboard
+        </a>
+      </div>
+
       <table className="table-auto w-full">
         <thead>
           <tr className="bg-gray-100">
