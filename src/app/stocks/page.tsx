@@ -36,7 +36,8 @@ export default function Home() {
 
         if (!response.ok) {
           if (response.status === 401) {
-            window.location.href = "/Algo_Front_end/login";
+            const redirectUrl = process.env.NODE_ENV === "development" ? "/login" : "/Algo_Front_end/login";
+            window.location.href = redirectUrl;
           } else {
             // Handle other errors
             throw new Error("Network response was not ok");

@@ -24,7 +24,8 @@ export default function Login() {
     }
 
     // Redirect to the home page
-    window.location.href = "/Algo_Front_end";
+    const redirectUrl = process.env.NODE_ENV === "development" ? "/" : "/Algo_Front_end";
+    window.location.href = redirectUrl;
   };
 
   return (

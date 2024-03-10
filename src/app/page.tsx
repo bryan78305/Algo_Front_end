@@ -41,7 +41,8 @@ export default function Home() {
       .then((response) => {
         if (!response.ok) {
           if (response.status === 401) {
-            window.location.href = "/Algo_Front_end/login";
+            const redirectUrl = process.env.NODE_ENV === "development" ? "/login" : "/Algo_Front_end/login";
+            window.location.href = redirectUrl;
           } else {
             // Handle other errors
             throw new Error("Network response was not ok");
@@ -120,7 +121,7 @@ export default function Home() {
   // Add/delete rows
   //
   const addRow = () => {
-    const newRow = { buy_price: 0, sell_price: 0, shares_to_buy: 0, additional_shares: 0 };
+    const newRow = { buy_price: 0, sell_price: 0, shares_to_buy: 0, additional_shares: 0, step: 0 };
     fetch(`${process.env.NEXT_PUBLIC_ALGO_API_URL}/api/v1/steps`, {
       method: "POST",
       headers: {
@@ -145,6 +146,24 @@ export default function Home() {
     })
       .then(() => fetchData())
       .catch((error) => console.error("Error deleting row: ", error));
+  };
+
+  //
+  // Add row below the plus button
+  //
+  const addRowBelow = (step: number) => {
+    const newRow = { buy_price: 0, sell_price: 0, shares_to_buy: 0, additional_shares: 0, step: step + 1 };
+
+    fetch(`${process.env.NEXT_PUBLIC_ALGO_API_URL}/api/v1/steps`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${bearerToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newRow),
+    })
+      .then(() => fetchData())
+      .catch((error) => console.error("Error adding row: ", error));
   };
 
   //
@@ -257,6 +276,9 @@ export default function Home() {
                 </button>
                 <button onClick={() => deleteRow(row.id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
                   Delete
+                </button>
+                <button onClick={() => addRowBelow(row.step)} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                  +
                 </button>
               </td>
             </tr>
