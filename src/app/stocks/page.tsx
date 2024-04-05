@@ -9,6 +9,7 @@ type TableRow = {
   current_price: number;
   diff: number;
   step_size: number;
+  selling: boolean;
 };
 
 var bearerToken = "";
@@ -47,7 +48,7 @@ export default function Home() {
         }
         return response.json();
       })
-      .then((data) => setRows(data.map((item: any) => ({ ...item }))))
+      .then((data) => setRows(data.map((item: any) => ({ ...item, selling: false }))))
       .catch((error) => console.error("Error fetching data: ", error));
   };
 
@@ -55,14 +56,18 @@ export default function Home() {
   // When user clicks the sell button we call this function
   // that makes an API POST call with the symbol, qty, and price
   //
-  const sellStock = (symbol: string, qty: number, price: number) => {
+  const sellStock = (row: TableRow, index: number) => {
+    const newRows = [...rows];
+    newRows[index].selling = true;
+    setRows(newRows);
+
     fetch(`${process.env.NEXT_PUBLIC_STOCK_ALGO_API_URL}/trades/close`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${bearerToken}`,
       },
-      body: JSON.stringify({ symbol, qty, price }),
+      body: JSON.stringify({ symbol: row.symbol, qty: row.qty, price: row.current_price }),
     })
       .then((response) => {
         if (!response.ok) {
@@ -124,9 +129,13 @@ export default function Home() {
               <td className="border px-4 py-2 text-center">${row.current_price.toFixed(2)}</td>
               <td className="border px-4 py-2 text-center">${row.diff.toFixed(2)}</td>
               <td className="border px-4 py-2 text-center">
-                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => sellStock(row.symbol, row.step_size, row.current_price)}>
-                  Sell {row.step_size} Shares @ ${row.current_price.toFixed(2)}
-                </button>
+                {row.selling}
+                {row.selling && <p className="text-red-700">Selling...</p>}
+                {!row.selling && (
+                  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => sellStock(row, index)}>
+                    Sell {row.step_size} Shares @ ${row.current_price.toFixed(2)}
+                  </button>
+                )}
               </td>
             </tr>
           ))}
