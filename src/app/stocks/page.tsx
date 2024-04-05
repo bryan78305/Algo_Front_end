@@ -114,6 +114,7 @@ export default function Home() {
             <th className="px-4 py-2">Symbol</th>
             <th className="px-4 py-2">Qty</th>
             <th className="px-4 py-2">Lot Size</th>
+            <th className="px-4 py-2">Step Size</th>
             <th className="px-4 py-2">Last Buy Price</th>
             <th className="px-4 py-2">Current Market</th>
             <th className="px-4 py-2">Difference</th>
@@ -126,6 +127,7 @@ export default function Home() {
               <td className="border px-4 py-2 text-center">{row.symbol}</td>
               <td className="border px-4 py-2 text-center">{row.qty}</td>
               <td className="border px-4 py-2 text-center">{row.lot_size}</td>
+              <td className="border px-4 py-2 text-center">${row.step_size}</td>
               <td className="border px-4 py-2 text-center">${row.step_price.toFixed(2)}</td>
               <td className="border px-4 py-2 text-center">${row.current_price.toFixed(2)}</td>
               <td className="border px-4 py-2 text-center">${row.diff.toFixed(2)}</td>
