@@ -10,6 +10,7 @@ type TableRow = {
   diff: number;
   step_size: number;
   selling: boolean;
+  lot_size: number;
 };
 
 var bearerToken = "";
@@ -112,7 +113,7 @@ export default function Home() {
           <tr className="bg-gray-100">
             <th className="px-4 py-2">Symbol</th>
             <th className="px-4 py-2">Qty</th>
-            <th className="px-4 py-2">Step Size</th>
+            <th className="px-4 py-2">Lot Size</th>
             <th className="px-4 py-2">Last Buy Price</th>
             <th className="px-4 py-2">Current Market</th>
             <th className="px-4 py-2">Difference</th>
@@ -124,7 +125,7 @@ export default function Home() {
             <tr key={index}>
               <td className="border px-4 py-2 text-center">{row.symbol}</td>
               <td className="border px-4 py-2 text-center">{row.qty}</td>
-              <td className="border px-4 py-2 text-center">{row.step_size}</td>
+              <td className="border px-4 py-2 text-center">{row.lot_size}</td>
               <td className="border px-4 py-2 text-center">${row.step_price.toFixed(2)}</td>
               <td className="border px-4 py-2 text-center">${row.current_price.toFixed(2)}</td>
               <td className="border px-4 py-2 text-center">${row.diff.toFixed(2)}</td>
