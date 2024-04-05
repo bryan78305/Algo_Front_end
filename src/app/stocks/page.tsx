@@ -68,7 +68,7 @@ export default function Home() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${bearerToken}`,
       },
-      body: JSON.stringify({ symbol: row.symbol, qty: row.qty, price: row.current_price }),
+      body: JSON.stringify({ symbol: row.symbol, qty: row.lot_size, price: row.current_price }),
     })
       .then((response) => {
         if (!response.ok) {
@@ -134,7 +134,7 @@ export default function Home() {
                 {row.selling && <p className="text-red-700">Selling...</p>}
                 {!row.selling && (
                   <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => sellStock(row, index)}>
-                    Sell {row.step_size} Shares @ ${row.current_price.toFixed(2)}
+                    Sell {row.lot_size} Shares @ ${row.current_price.toFixed(2)}
                   </button>
                 )}
               </td>
