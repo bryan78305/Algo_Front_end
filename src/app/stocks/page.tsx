@@ -4,9 +4,11 @@ import { useState, useEffect, ChangeEvent } from "react";
 
 type TableRow = {
   symbol: string;
-  bid_price: number;
-  last_fill: number;
+  qty: number;
+  step_price: number;
+  current_price: number;
   diff: number;
+  step_size: number;
 };
 
 var bearerToken = "";
@@ -49,9 +51,42 @@ export default function Home() {
       .catch((error) => console.error("Error fetching data: ", error));
   };
 
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
+  //
+  // When user clicks the sell button we call this function
+  // that makes an API POST call with the symbol, qty, and price
+  //
+  const sellStock = (symbol: string, qty: number, price: number) => {
+    fetch(`${process.env.NEXT_PUBLIC_STOCK_ALGO_API_URL}/trades/close`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${bearerToken}`,
+      },
+      body: JSON.stringify({ symbol, qty, price }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          if (response.status === 401) {
+            const redirectUrl = process.env.NODE_ENV === "development" ? "/login" : "/Algo_Front_end/login";
+            window.location.href = redirectUrl;
+          } else {
+            // Handle other errors
+            throw new Error("Network response was not ok");
+          }
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Stock sold: ", data);
+        setTimeout(() => fetchData(), 2000);
+      })
+      .catch((error) => console.error("Error selling stock: ", error));
+  };
+
+  // On load of the page
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <div className="container mx-auto p-4">
@@ -71,18 +106,28 @@ export default function Home() {
         <thead>
           <tr className="bg-gray-100">
             <th className="px-4 py-2">Symbol</th>
-            <th className="px-4 py-2">Last Fill</th>
-            <th className="px-4 py-2">Current Bid</th>
+            <th className="px-4 py-2">Qty</th>
+            <th className="px-4 py-2">Step Size</th>
+            <th className="px-4 py-2">Last Buy Price</th>
+            <th className="px-4 py-2">Current Market</th>
             <th className="px-4 py-2">Difference</th>
+            <th className="px-4 py-2">&nbsp;</th>
           </tr>
         </thead>
         <tbody>
           {rows.map((row, index) => (
             <tr key={index}>
-              <td className="border px-4 py-2">{row.symbol}</td>
-              <td className="border px-4 py-2">${row.last_fill.toFixed(2)}</td>
-              <td className="border px-4 py-2">${row.bid_price.toFixed(2)}</td>
-              <td className="border px-4 py-2">${row.diff.toFixed(2)}</td>
+              <td className="border px-4 py-2 text-center">{row.symbol}</td>
+              <td className="border px-4 py-2 text-center">{row.qty}</td>
+              <td className="border px-4 py-2 text-center">{row.step_size}</td>
+              <td className="border px-4 py-2 text-center">${row.step_price.toFixed(2)}</td>
+              <td className="border px-4 py-2 text-center">${row.current_price.toFixed(2)}</td>
+              <td className="border px-4 py-2 text-center">${row.diff.toFixed(2)}</td>
+              <td className="border px-4 py-2 text-center">
+                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => sellStock(row.symbol, row.step_size, row.current_price)}>
+                  Sell {row.step_size} Shares @ ${row.current_price.toFixed(2)}
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
