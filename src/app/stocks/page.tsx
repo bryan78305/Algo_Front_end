@@ -118,6 +118,7 @@ export default function Home() {
             <th className="px-4 py-2">Last Buy Price</th>
             <th className="px-4 py-2">Current Market</th>
             <th className="px-4 py-2">Difference</th>
+            <th className="px-4 py-2">Delta to Next</th>
             <th className="px-4 py-2">&nbsp;</th>
           </tr>
         </thead>
@@ -131,6 +132,7 @@ export default function Home() {
               <td className="border px-4 py-2 text-center">${row.step_price.toFixed(2)}</td>
               <td className="border px-4 py-2 text-center">${row.current_price.toFixed(2)}</td>
               <td className="border px-4 py-2 text-center">${row.diff.toFixed(2)}</td>
+              <td className="border px-4 py-2 text-center">${(row.step_size - row.diff).toFixed(2)}</td>
               <td className="border px-4 py-2 text-center">
                 {row.selling}
                 {row.selling && <p className="text-red-700">Selling...</p>}
