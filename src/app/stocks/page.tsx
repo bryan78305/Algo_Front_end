@@ -11,6 +11,11 @@ type TableRow = {
   step_size: number;
   selling: boolean;
   lot_size: number;
+  has_order: boolean;
+  buy_order_qty: number;
+  buy_order_price: number;
+  sell_order_qty: number;
+  sell_order_price: number;
 };
 
 var bearerToken = "";
@@ -89,6 +94,19 @@ export default function Home() {
       .catch((error) => console.error("Error selling stock: ", error));
   };
 
+  const OrderDetails = ({ row }: { row: TableRow }) => {
+    return (
+      <div>
+        <p className={row.buy_order_qty > 0 ? "" : "text-red-700"}>
+          Buy: ${row.buy_order_price.toFixed(2)} ({row.buy_order_qty})
+        </p>
+        <p className={row.sell_order_qty > 0 ? "" : "text-red-700"}>
+          Sell: ${row.sell_order_price.toFixed(2)} ({row.sell_order_qty})
+        </p>
+      </div>
+    );
+  };
+
   // On load of the page
   useEffect(() => {
     fetchData();
@@ -119,6 +137,7 @@ export default function Home() {
             <th className="px-4 py-2">Current Market</th>
             <th className="px-4 py-2">Difference</th>
             <th className="px-4 py-2">Delta to Next</th>
+            <th className="px-4 py-2">Orders</th>
             <th className="px-4 py-2">&nbsp;</th>
           </tr>
         </thead>
@@ -133,6 +152,9 @@ export default function Home() {
               <td className="border px-4 py-2 text-center">${row.current_price.toFixed(2)}</td>
               <td className="border px-4 py-2 text-center">${row.diff.toFixed(2)}</td>
               <td className="border px-4 py-2 text-center">${(row.step_size - row.diff).toFixed(2)}</td>
+              <td className="border px-4 py-2 text-center">
+                <OrderDetails row={row} />
+              </td>
               <td className="border px-4 py-2 text-center">
                 {row.selling}
                 {row.selling && <p className="text-red-700">Selling...</p>}
